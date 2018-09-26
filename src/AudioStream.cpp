@@ -6,7 +6,7 @@
  */
 
 #include "AudioStream.h"
-#include "APTalk.h"
+#include "APMusic.h"
 #include "MP3Stream.h"
 #include <DLog.h>
 

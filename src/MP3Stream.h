@@ -15,7 +15,7 @@
 #include <asm/types.h>
 
 #include "AudioStream.h"
-#include "APTalk.h"
+#include "APMusic.h"
 
 using namespace std;
 //#define MUSICBUFFERLENGTH 2048

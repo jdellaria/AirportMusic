@@ -18,7 +18,7 @@
 #include "RTSPClient.h"
 #include "RAOPClient.h"
 #include "AudioStream.h"
-#include "APTalk.h"
+#include "APMusic.h"
 
 
 extern DLog myLog;
