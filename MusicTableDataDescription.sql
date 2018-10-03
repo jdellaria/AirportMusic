@@ -30,8 +30,11 @@ CREATE TABLE `Albums` (
   `refId` int(11) DEFAULT NULL,
   `DateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `LastSelected` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `Cover` char(255) DEFAULT NULL,
+  `ArtistName` char(255) DEFAULT NULL,
+  `SongYear` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`AlbumId`)
-) ENGINE=MyISAM AUTO_INCREMENT=2862 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=3727 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,7 +62,7 @@ CREATE TABLE `Artists` (
   `ArtistId` int(11) NOT NULL AUTO_INCREMENT,
   `refId` int(11) DEFAULT NULL,
   PRIMARY KEY (`ArtistId`)
-) ENGINE=MyISAM AUTO_INCREMENT=1376 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1588 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,45 +79,28 @@ CREATE TABLE `AutoSongQuery` (
   `SQLStatement` varchar(2000) NOT NULL,
   `rowOffset` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `bacsonglibrary`
+-- Table structure for table `DiffTime`
 --
 
-DROP TABLE IF EXISTS `bacsonglibrary`;
+DROP TABLE IF EXISTS `DiffTime`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bacsonglibrary` (
+CREATE TABLE `DiffTime` (
+  `Idy` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL DEFAULT '0',
+  `songID` int(10) unsigned NOT NULL DEFAULT '0',
+  `diff` bigint(21) DEFAULT NULL,
   `Name` char(255) DEFAULT NULL,
   `Artist` char(150) DEFAULT NULL,
-  `Composer` char(100) DEFAULT NULL,
   `Album` char(255) DEFAULT NULL,
-  `Grouping` char(100) DEFAULT NULL,
-  `Genre` char(100) DEFAULT NULL,
-  `Size` int(11) DEFAULT NULL,
-  `SongTime` int(11) DEFAULT NULL,
-  `DiscNumber` int(11) DEFAULT NULL,
-  `DiscCount` int(11) DEFAULT NULL,
-  `TrackNumber` int(11) DEFAULT NULL,
-  `TrackCount` int(11) DEFAULT NULL,
-  `SongYear` char(20) DEFAULT NULL,
-  `DateModified` datetime DEFAULT NULL,
-  `DateAdded` datetime DEFAULT NULL,
-  `BitRate` int(11) DEFAULT NULL,
-  `SampleRate` int(11) DEFAULT NULL,
-  `VolumeAdjustment` int(11) DEFAULT NULL,
-  `Kind` char(40) DEFAULT NULL,
-  `Equalizer` char(20) DEFAULT NULL,
-  `Comments` char(100) DEFAULT NULL,
-  `PlayCount` int(11) DEFAULT '0',
-  `LastPlayed` datetime DEFAULT NULL,
-  `MyRating` int(11) DEFAULT NULL,
+  `BeginPlayTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `Location` char(255) DEFAULT NULL,
-  `SongIndex` int(10) unsigned NOT NULL,
-  `Catalog` char(20) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`Idy`)
+) ENGINE=InnoDB AUTO_INCREMENT=763627 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,7 +120,7 @@ CREATE TABLE `playq` (
   `RequestTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Arrangement` int(10) unsigned NOT NULL DEFAULT '99999999',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=671751 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=833489 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,7 +161,7 @@ CREATE TABLE `presonglibrary` (
   `ArtistId` int(11) NOT NULL,
   `AlbumId` int(11) NOT NULL,
   PRIMARY KEY (`SongIndex`)
-) ENGINE=MyISAM AUTO_INCREMENT=62801 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=73567 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -216,45 +202,7 @@ CREATE TABLE `songlibrary` (
   `ArtistId` int(11) NOT NULL,
   `AlbumId` int(11) NOT NULL,
   PRIMARY KEY (`SongIndex`)
-) ENGINE=MyISAM AUTO_INCREMENT=57317 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `student2`
---
-
-DROP TABLE IF EXISTS `student2`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `student2` (
-  `Name` char(255) DEFAULT NULL,
-  `Artist` char(150) DEFAULT NULL,
-  `Composer` char(100) DEFAULT NULL,
-  `Album` char(255) DEFAULT NULL,
-  `Grouping` char(100) DEFAULT NULL,
-  `Genre` char(100) DEFAULT NULL,
-  `Size` int(11) DEFAULT NULL,
-  `SongTime` int(11) DEFAULT NULL,
-  `DiscNumber` int(11) DEFAULT NULL,
-  `DiscCount` int(11) DEFAULT NULL,
-  `TrackNumber` int(11) DEFAULT NULL,
-  `TrackCount` int(11) DEFAULT NULL,
-  `SongYear` char(20) DEFAULT NULL,
-  `DateModified` datetime DEFAULT NULL,
-  `DateAdded` datetime DEFAULT NULL,
-  `BitRate` int(11) DEFAULT NULL,
-  `SampleRate` int(11) DEFAULT NULL,
-  `VolumeAdjustment` int(11) DEFAULT NULL,
-  `Kind` char(40) DEFAULT NULL,
-  `Equalizer` char(20) DEFAULT NULL,
-  `Comments` char(100) DEFAULT NULL,
-  `PlayCount` int(11) DEFAULT '0',
-  `LastPlayed` datetime DEFAULT NULL,
-  `MyRating` int(11) DEFAULT NULL,
-  `Location` char(255) DEFAULT NULL,
-  `SongIndex` int(10) unsigned NOT NULL DEFAULT '0',
-  `Catalog` char(20) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=68084 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -266,4 +214,4 @@ CREATE TABLE `student2` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-02 19:02:26
+-- Dump completed on 2018-10-03 15:10:23
