@@ -42,3 +42,19 @@ Library search path:
 /usr/lib/mysql
 "${workspace_loc:/DLiriumLib/Release}"
 /usr/local/ssl/lib
+
+USEFUL GIT COMMANDS
+git diff @{upstream}
+
+git commit -a
+git commit -a -m "Your commit message here"
+
+git push
+
+
+//git add  NAME_OF_FILE or
+//git add . - to add all new files and changes
+git status
+
+jdellaria
+Eff13m23
