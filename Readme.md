@@ -55,6 +55,3 @@ git push
 //git add  NAME_OF_FILE or
 //git add . - to add all new files and changes
 git status
-
-jdellaria
-Eff13m23
