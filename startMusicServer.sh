@@ -1,4 +1,4 @@
 #! /bin/sh
 
-nohup ./AirPortTalk  &
+nohup ./AirPortMusic  &
 
