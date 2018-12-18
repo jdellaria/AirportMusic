@@ -81,6 +81,7 @@ int asciiToUtf8(char *string, size_t maxLen)
 	free (result);
 	return(returnValue);
 }
+
 //Music Database Connection
 MYSQL OpenDBConnection()
 {
@@ -88,7 +89,10 @@ MYSQL OpenDBConnection()
 	string message;
 	/* now to connect to the database */
 
-	if(mysql_init(&dbaseConnection) == NULL)	err = 1;
+	if(mysql_init(&dbaseConnection) == NULL)
+	{
+		err = 1;
+	}
 	else
 	{
 		if(mysql_real_connect(&dbaseConnection,"localhost","root","dlirius","Music",0,NULL,0) == NULL)
@@ -101,7 +105,8 @@ MYSQL OpenDBConnection()
 		message.append(": Failed to connect to database: ");
 		message.append(mysql_error(&dbaseConnection));
 		myLog.print(logError, message);
-		exit(0);
+//		return(0); Jon
+//		exit(0);
 	}
 	return (dbaseConnection);
 }
@@ -146,7 +151,8 @@ char * getActiveAutoSongQuerySQLStatement()
 		message.append(__func__);
 		message.append(": SQL error");
 		myLog.print(logError, message);
-		exit(1);
+//		exit(1);
+		return (0);
 	}
 
 	activeAutomaticSongQueryResult = mysql_store_result(&dbaseConnection);
@@ -163,6 +169,17 @@ MYSQL_RES * queryAutomaticSong()
 	MYSQL_RES *queryAutomaticSongResult;
 
 	sprintf(queryStmt,getActiveAutoSongQuerySQLStatement());
+	if (queryStmt == 0)
+	{
+		message = __func__;
+		message.append(": getActiveAutoSongQuerySQLStatement returned 0"); //Jon
+		myLog.print(logError, message);
+		return (0);
+	}
+
+	message = __func__;
+	message.append(": before mysql_real_query"); //Jon
+	myLog.print(logDebug, message);
 
 	if(mysql_real_query(&dbaseConnection,queryStmt,strlen(queryStmt)))
 	{
@@ -170,10 +187,19 @@ MYSQL_RES * queryAutomaticSong()
 		message.append(__func__);
 		message.append(": SQL error");
 		myLog.print(logError, message);
-		exit(1);
+		return(0);
+//		exit(1);
 	}
 
+	message = __func__;
+	message.append(": before mysql_store_result"); //Jon
+	myLog.print(logDebug, message);
+
 	queryAutomaticSongResult = mysql_store_result(&dbaseConnection);
+
+	message = __func__;
+	message.append(": before mysql_data_seek"); //Jon
+	myLog.print(logDebug, message);
 
 	mysql_data_seek(queryAutomaticSongResult, rowOffset);
 
@@ -187,16 +213,39 @@ struct playQRecord getNextAutomaticSongRecord()
 	MYSQL_ROW row;
 	struct playQRecord pQR;
 	MYSQL_RES *queryAutomaticSongResult;
+	string message;
+
+	message = __func__;
+	message.append(": before queryAutomaticSong"); //Jon
+	myLog.print(logDebug, message);
 
 	queryAutomaticSongResult = queryAutomaticSong();
-	row = mysql_fetch_row(queryAutomaticSongResult);
-	if (row == NULL) // if a null is returned, assume that we are at the end of the resut set
+	if (queryAutomaticSongResult == 0)
 	{
+		message = __func__;
+		message.append(": queryAutomaticSong returned 0 setting autoplay to manual"); //Jon
+		myLog.print(logError, message);
+		playAutomatic = 0;
+		pQR.id = 0;//MusicPlayQResultSet.getLong(1);
+		pQR.songID = 0;//MusicPlayQResultSet.getLong(2);
+		return (pQR);
+	}
+	row = mysql_fetch_row(queryAutomaticSongResult);
+	if (row == NULL) // if a null is returned, assume that we are at the end of the result set
+	{
+		message = __func__;
+		message.append(": (row == NULL)"); //Jon
+		myLog.print(logDebug, message);
+
 		mysql_free_result(queryAutomaticSongResult);
 		zeroAutomaticSongRowOffset();
 		queryAutomaticSongResult = queryAutomaticSong();
 		row = mysql_fetch_row(queryAutomaticSongResult);
 	}
+	message = __func__;
+	message.append(": before incrementAutomaticSongRowOffset"); //Jon
+	myLog.print(logDebug, message);
+
 	incrementAutomaticSongRowOffset(); // Save current song result offset back to the record
 
 	pQR.id = 0;//MusicPlayQResultSet.getLong(1);
@@ -210,6 +259,10 @@ struct playQRecord getNextAutomaticSongRecord()
 	pQR.tracknumber =  atol(row[6]);//MusicPlayQResultSet.getInt(9);
 	pQR.songyear =  atol(row[7]);//MusicPlayQResultSet.getInt(10);
 	mysql_free_result(queryAutomaticSongResult);
+	message = __func__;
+	message.append(": before reurn"); //Jon
+	myLog.print(logDebug, message);
+
 	return (pQR);
 }
 
@@ -230,7 +283,8 @@ void incrementAutomaticSongRowOffset()
 		message.append(": Database error: ");
 		message.append(mysql_error(&dbaseConnection));
 		myLog.print(logError, message);
-		exit(0);
+		return;
+//		exit(0);
 	}
 }
 
@@ -247,7 +301,7 @@ void zeroAutomaticSongRowOffset()
 		message.append(": Database error: ");
 		message.append(mysql_error(&dbaseConnection));
 		myLog.print(logError, message);
-		exit(0);
+//		exit(0);
 	}
 }
 
@@ -259,30 +313,67 @@ struct playQRecord getNextSongRecord()
 	unsigned long playQID;
 	struct playQRecord pQR;
 	MYSQL_RES *queryPlayQResult;
+	string message;
+
+	message = "MusicDB.cpp "; // Jon
+	message.append(__func__);
+	message.append(": before getCurrentSongInPlayQ");
+	myLog.print(logDebug, message);
 
 	pQR = getCurrentSongInPlayQ();
+
 	if (pQR.id > 0)
 	{
 		updatePlayQStatus(pQR.id, "Completed");
 		updatePlayQEndPlayTime(pQR.id);
 		incrementSongPlayCount(pQR.songID);
 	}
+
+	message = "MusicDB.cpp "; // Jon
+	message.append(__func__);
+	message.append(": before queryPlayQ() ");
+	myLog.print(logDebug, message);
+
 	queryPlayQResult = queryPlayQ();
+
+	message = "MusicDB.cpp "; // Jon
+	message.append(__func__);
+	message.append(": before mysql_num_rows() ");
+	myLog.print(logDebug, message);
+
 	nrows = mysql_num_rows(queryPlayQResult);
+
+
+
 	if (nrows > 0)
 	{
+		message = "MusicDB.cpp "; // Jon
+		message.append(__func__);
+		message.append(": (nrows > 0) ");
+		myLog.print(logDebug, message);
+
 		pQR = getNextPlayQRecord();
 	}
 	else
 	{
 		if (playAutomatic == 1)
 		{
+			message = "MusicDB.cpp "; // Jon
+			message.append(__func__);
+			message.append(": (playAutomatic == 1) ");
+			myLog.print(logDebug, message);
+
 			pQR = getNextAutomaticSongRecord();
 			addSongToPlayQ(pQR.songID, "Automatic");
 			pQR = getNextPlayQRecord();
 		}
 		else
 		{
+			message = "MusicDB.cpp "; // Jon
+			message.append(__func__);
+			message.append(": pQR.id = 0 ");
+			myLog.print(logDebug, message);
+
 			pQR.id = 0;
 		}
 	}
@@ -375,7 +466,7 @@ void addSongToPlayQ(long songID, char * requestType)
 		message.append(": Database error: ");
 		message.append(mysql_error(&dbaseConnection));
 		myLog.print(logError, message);
-		exit(0);
+//		exit(0);
 	}
 	return;
 }
@@ -393,7 +484,7 @@ void updatePlayQStatus(long id, char * Status)
 		message.append(": Database error: ");
 		message.append(mysql_error(&dbaseConnection));
 		myLog.print(logError, message);
-		exit(0);
+//		exit(0);
 	}
 }
 
@@ -434,7 +525,7 @@ void  updatePlayQTimeField(long id, char * SQLStmt)
 		message.append(": mysql_stmt_init(), out of memory: ");
 		message.append(mysql_error(&dbaseConnection));
 		myLog.print(logError, message);
-		exit(0);
+//		exit(0);
 	}
 	if (mysql_stmt_prepare( stmt, SQLStmt, strlen(SQLStmt)))
 	{
@@ -443,7 +534,7 @@ void  updatePlayQTimeField(long id, char * SQLStmt)
 		message.append(": ");
 		message.append(mysql_stmt_error(stmt));
 		myLog.print(logError, message);
-		exit(0);
+//		exit(0);
 	}
 
 	memset(bind, 0, sizeof(bind));
@@ -488,7 +579,7 @@ void  updatePlayQTimeField(long id, char * SQLStmt)
 		message.append(": ");
 		message.append(mysql_stmt_error(stmt));
 		myLog.print(logError, message);
-		exit(0);
+//		exit(0);
 	}
 	/* Close the statement */
 	if (mysql_stmt_close(stmt))
@@ -498,7 +589,7 @@ void  updatePlayQTimeField(long id, char * SQLStmt)
 		message.append(": failed while closing the statement: ");
 		message.append(mysql_stmt_error(stmt));
 		myLog.print(logError, message);
-		exit(0);
+	//	exit(0);
 	}
 }
 
@@ -515,7 +606,8 @@ MYSQL_RES * queryPlayQ()
 		message.append(__func__);
 		message.append(": SQL error");
 		myLog.print(logError, message);
-		exit(1);
+		return(0);
+//		exit(1);
 	}
 	queryPlayQResult = mysql_store_result(&dbaseConnection);
 	return(queryPlayQResult);
@@ -553,7 +645,7 @@ struct playQRecord getCurrentSongInPlayQ()
 	MYSQL_RES *queryResult;
 	int	nrows;
 	long returnValue;
-	struct playQRecord pQR;
+	struct playQRecord pQR = {0};
 	string message;
 
 	if (mysql_query(&dbaseConnection, SQLStmt))
@@ -564,13 +656,18 @@ struct playQRecord getCurrentSongInPlayQ()
 		message.append(": ");
 		message.append(mysql_error(&dbaseConnection));
 		myLog.print(logError, message);
-		exit(0);
+		return(pQR);
+//		exit(0);
 	}
 	queryResult = mysql_store_result(&dbaseConnection);
 	nrows = mysql_num_rows(queryResult);
 	if (nrows == 0)
 	{
 		pQR.id = 0; //if id = 0 then no rows were returned
+		message = "MusicDB.cpp "; // Jon
+		message.append(__func__);
+		message.append(": pQR.id = 0");
+		myLog.print(logDebug, message);
 	}
 	else
 	{
@@ -585,6 +682,12 @@ struct playQRecord getCurrentSongInPlayQ()
 		sprintf(pQR.genre,row[7]);
 		pQR.tracknumber =  atoi(row[8]);
 		pQR.songyear = atoi(row[9]);
+
+		message = "MusicDB.cpp "; // Jon
+		message.append(__func__);
+		message.append(": song returned");
+		myLog.print(logDebug, message);
+
 	}
 	mysql_free_result(queryResult);
 	return (pQR);

@@ -184,7 +184,7 @@ int main(int argc, char* const argv[])
 				networkMode = NETWORK_ACTION_WAIT;
 				message = __func__;
 				message.append(": NETWORK_ACTION_DISCONNECT");
-				myLog.print(logInformation, message);
+				myLog.print(logWarning, message);
 				sleep(2);
 			}
 			if (networkMode == NETWORK_ACTION_CONNECT) //this should run first to set up raop and rstp connection
@@ -225,7 +225,7 @@ int main(int argc, char* const argv[])
 				{
 					message = __func__;
 					message.append(": NETWORK_ACTION_WAIT: No song to play");
-					myLog.print(logInformation, message);
+					myLog.print(logWarning, message);
 					playMode = PLAY_ACTION_PAUSE;
 					sleep(5);
 				}
@@ -237,7 +237,13 @@ int main(int argc, char* const argv[])
 				myLog.print(logDebug, message);
 				while (playMode == PLAY_ACTION_PLAY)
 				{
+					message = __func__;
+					message.append(": playMode == PLAY_ACTION_PLAY getting next song record"); //Jon
+					myLog.print(logDebug, message);
 					pQR = getNextSongRecord();
+					message = __func__;
+					message.append(": playMode == PLAY_ACTION_PLAY returned from get song record"); //Jon
+					myLog.print(logDebug, message);
 					if (pQR.id != 0)
 					{
 						if (asciiToUtf8(pQR.location, 255) != 1)
@@ -250,7 +256,7 @@ int main(int argc, char* const argv[])
 						message = __func__;
 						message.append(": PlaySong FileName - ");
 						message.append(pQR.location);
-						myLog.print(logWarning, message);
+						myLog.print(logInformation, message);
 						songFD = PlaySong(pQR.location,AUD_TYPE_NONE);
 					}
 					else
@@ -259,7 +265,7 @@ int main(int argc, char* const argv[])
 						networkMode = NETWORK_ACTION_DISCONNECT;
 						message = __func__;
 						message.append(": NETWORK_ACTION_NORMAL: No song to play");
-						myLog.print(logInformation, message);
+						myLog.print(logWarning, message);
 						sleep(5);
 					}
 				}
@@ -352,7 +358,7 @@ int PlaySong(string audioFileName, data_type_t adt)  // orig
 	playMode = PLAY_ACTION_PLAY; // Set playmode back to play... since we are out of the play loop
 	message = __func__;
 	message.append(": auds.Close");
-	myLog.print(logWarning, message);
+	myLog.print(logDebug, message);
 	auds.Close();
 
 }

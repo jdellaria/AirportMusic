@@ -130,7 +130,7 @@ int MP3Stream::ExecuteDecoder(char* const argv[], int *infd, int *outfd, int *er
 		close(outfds[1]);
 
 		execvp(argv[0], argv);
-		exit(0);
+//Jon		exit(0);
 	}
 
 	if(infd)
