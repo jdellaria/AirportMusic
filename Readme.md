@@ -1,4 +1,4 @@
- AirportTalk
+ AirportMusic
 
 Supported filetypes:
 .mp3 which is played by mpg123.  Only mp3 type streams can be played
