@@ -3,6 +3,8 @@
 # debug
 /Debug
 
+# release
+/Release
 
 # production
 /build
