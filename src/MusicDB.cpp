@@ -250,12 +250,12 @@ struct playQRecord getNextAutomaticSongRecord()
 
 	pQR.id = 0;//MusicPlayQResultSet.getLong(1);
 	pQR.songID = atol(row[0]);//MusicPlayQResultSet.getLong(2);
-	sprintf(pQR.name,row[1]);//MusicPlayQResultSet.getString(3);
-	sprintf(pQR.artist,row[2]);//MusicPlayQResultSet.getString(4);
-	sprintf(pQR.location,row[3]);//MusicPlayQResultSet.getString(5);
+	strcpy(pQR.name,row[1]);//MusicPlayQResultSet.getString(3);
+	strcpy(pQR.artist,row[2]);//MusicPlayQResultSet.getString(4);
+	strcpy(pQR.location,row[3]);//MusicPlayQResultSet.getString(5);
 //	sprintf(pQR.status,row[5]);//MusicPlayQResultSet.getString(6);
-	sprintf(pQR.album,row[4]);//MusicPlayQResultSet.getString(7);
-	sprintf(pQR.genre,row[5]);//MusicPlayQResultSet.getString(8);
+	strcpy(pQR.album,row[4]);//MusicPlayQResultSet.getString(7);
+	strcpy(pQR.genre,row[5]);//MusicPlayQResultSet.getString(8);
 	pQR.tracknumber =  atol(row[6]);//MusicPlayQResultSet.getInt(9);
 	pQR.songyear =  atol(row[7]);//MusicPlayQResultSet.getInt(10);
 	mysql_free_result(queryAutomaticSongResult);
@@ -624,12 +624,12 @@ struct playQRecord getNextPlayQRecord()
 	row = mysql_fetch_row(queryPlayQResult);
 	pQR.id = atol(row[0]);
 	pQR.songID = atol(row[1]);
-	sprintf(pQR.name,row[2]);
-	sprintf(pQR.artist,row[3]);
-	sprintf(pQR.location,row[4]);
-	sprintf(pQR.status,row[5]);
-	sprintf(pQR.album,row[6]);
-	sprintf(pQR.genre,row[7]);
+	strcpy(pQR.name,row[2]);
+	strcpy(pQR.artist,row[3]);
+	strcpy(pQR.location,row[4]);
+	strcpy(pQR.status,row[5]);
+	strcpy(pQR.album,row[6]);
+	strcpy(pQR.genre,row[7]);
 	pQR.tracknumber =  atoi(row[8]);
 	pQR.songyear = atoi(row[9]);
 	mysql_free_result(queryPlayQResult);
@@ -674,12 +674,12 @@ struct playQRecord getCurrentSongInPlayQ()
 		row = mysql_fetch_row(queryResult);
 		pQR.id = atol(row[0]);
 		pQR.songID = atol(row[1]);
-		sprintf(pQR.name,row[2]);
-		sprintf(pQR.artist,row[3]);
-		sprintf(pQR.location,row[4]);
-		sprintf(pQR.status,row[5]);
-		sprintf(pQR.album,row[6]);
-		sprintf(pQR.genre,row[7]);
+		strcpy(pQR.name,row[2]);
+		strcpy(pQR.artist,row[3]);
+		strcpy(pQR.location,row[4]);
+		strcpy(pQR.status,row[5]);
+		strcpy(pQR.album,row[6]);
+		strcpy(pQR.genre,row[7]);
 		pQR.tracknumber =  atoi(row[8]);
 		pQR.songyear = atoi(row[9]);
 
